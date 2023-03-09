@@ -9,32 +9,8 @@ namespace EducationAPI.Entities
 
         public DbSet<EducationalMaterial> EducationalMaterials { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
-        public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Administrator> Administrators { get; set; }
-
-
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<EducationalMaterial>()
-                .Property(r => r.Title)
-                .IsRequired()
-                .HasMaxLength(25);
-
-            modelBuilder.Entity<Assignment>()
-                .Property(r => r.Title)
-                .IsRequired()
-                .HasMaxLength(25);
-
-            modelBuilder.Entity<Assignment>()
-                .Property(r => r.Description)
-                .IsRequired();
-        }
-
-
-
-
+        public DbSet<AssignmentResult> AssignmentsResults { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
