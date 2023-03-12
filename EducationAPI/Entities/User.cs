@@ -1,4 +1,6 @@
-﻿namespace EducationAPI.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace EducationAPI.Entities
 {
     public class User
     {
@@ -6,6 +8,8 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
+
+        [EmailAddress]
         public string Email { get; set; }
         public string Password { get; set; }
         public int RoleId { get; set; }

@@ -1,6 +1,7 @@
 using EducationAPI;
 using EducationAPI.Entities;
 using System.Reflection;
+using EducationAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<EducationDbContext>();
 builder.Services.AddScoped<EducationalMaterialSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+
+builder.Services.AddScoped<IEducationalMaterialServices, EducationalMaterialServices>();
+
 
 var app = builder.Build();
 

@@ -10,7 +10,7 @@ namespace EducationAPI
         {
             CreateMap<EducationalMaterial, EducationalMaterialDto>();
             CreateMap<Assignment, AssignmentDto>();
-
+            CreateMap<CreateEducationalMaterialDto, EducationalMaterial>();
 
         }
 
