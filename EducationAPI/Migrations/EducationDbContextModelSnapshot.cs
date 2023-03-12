@@ -89,6 +89,9 @@ namespace EducationAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SourceUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("EducationalMaterials");
@@ -108,7 +111,7 @@ namespace EducationAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("EducationAPI.Entities.User", b =>
