@@ -29,9 +29,8 @@ namespace EducationAPI.Controllers
 
 
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<EducationalMaterialDto>> Get([FromRoute] int id)
+        public ActionResult Get([FromRoute] int id)
         {
-
             var educationalMaterial = _educationalMaterialServices.GetById(id);
 
             if (educationalMaterial == null)
