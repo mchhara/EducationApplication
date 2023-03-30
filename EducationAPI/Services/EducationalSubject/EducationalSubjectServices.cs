@@ -99,10 +99,10 @@ namespace EducationAPI.Services
         public AssignmentResponseDto AddAssigmentToSubject(AssignmentDto dto, int subjectId)
         {
             dto.EducationalSubjectId = subjectId;
-            var task = _mapper.Map<Entities.Assignment>(dto);
-            var taskResponse = _mapper.Map<AssignmentResponseDto>(task);
-
-            //_dbContext.EducationalSubjects.Add(task);
+            var assignment = _mapper.Map<Entities.Assignment>(dto);
+            var taskResponse = _mapper.Map<AssignmentResponseDto>(assignment);
+            
+            _dbContext.Assignments.Add(assignment);
             _dbContext.SaveChanges();
             return taskResponse;
 
