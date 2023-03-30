@@ -13,8 +13,8 @@ namespace EducationAPI
             CreateMap<EducationalSubject, EducationalSubjectDtoResponse>();
             CreateMap<EducationalSubjectDto, EducationalSubject>();
 
-            CreateMap<Assignment, AssignmentDto>();
-            CreateMap<AssignmentResponseDto, Assignment>();
+            CreateMap<Assignment, AssignmentResponseDto>();
+            CreateMap<AssignmentDto, Assignment>();
 
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
