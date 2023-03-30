@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EducationAPI
 {
-    public class EducationalMaterialSeeder
+    public class EducationalSubjectSeeder
     {
         private readonly EducationDbContext _dBContext;
 
-        public EducationalMaterialSeeder(EducationDbContext dBContext)
+        public EducationalSubjectSeeder(EducationDbContext dBContext)
         {
             _dBContext = dBContext;
         }
@@ -33,10 +33,10 @@ namespace EducationAPI
                     _dBContext.SaveChanges();
                 }
 
-                if (!_dBContext.EducationalMaterials.Any())
+                if (!_dBContext.EducationalSubjects.Any())
                 {
                     var materials = GetEducationalMaterials();
-                    _dBContext.EducationalMaterials.AddRange(materials);
+                    _dBContext.EducationalSubjects.AddRange(materials);
                     _dBContext.SaveChanges();
                 }
             }
@@ -65,15 +65,14 @@ namespace EducationAPI
             return roles;
         }
 
-        private IEnumerable<EducationalMaterial> GetEducationalMaterials()
+        private IEnumerable<EducationalSubject> GetEducationalMaterials()
         {
-            var materials = new List<EducationalMaterial>()
+            var materials = new List<EducationalSubject>()
             {
-                  new EducationalMaterial()
+                  new EducationalSubject()
                  {
                     Name = "MATH BOOK",
                     Description = "Materials for learning mathematics",
-                    SourceUrl = "",
                     Assignments = new List<Assignment>
                     {
 
@@ -92,11 +91,10 @@ namespace EducationAPI
                     
                 },
 
-                new EducationalMaterial()
+                new EducationalSubject()
                 {
                     Name = "HISTORY BOOK",
                     Description = "Materials for learning for students",
-                    SourceUrl = "",
                     Assignments = new List<Assignment>
                     {
 
@@ -113,9 +111,6 @@ namespace EducationAPI
                         },
                     },
                 }
-
-
-
             };
 
             return materials;

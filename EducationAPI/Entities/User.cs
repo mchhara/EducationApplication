@@ -8,12 +8,13 @@ namespace EducationAPI.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
-
-        [EmailAddress]
         public string Email { get; set; }
         public string Password { get; set; }
         public int RoleId { get; set; }
         public  Role Role { get; set; }
+        public List<Assignment> UserAssignments { get; set; }
+        public List<EducationalSubject> EducationalSubjects { get; set; }
+
 
     }
 }

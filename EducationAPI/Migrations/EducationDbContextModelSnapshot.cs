@@ -24,11 +24,11 @@ namespace EducationAPI.Migrations
 
             modelBuilder.Entity("EducationAPI.Entities.Assignment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("AssignmentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AssignmentId"));
 
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
@@ -37,16 +37,21 @@ namespace EducationAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EducationalMaterialId")
+                    b.Property<int>("EducationalSubjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("AssignmentId");
 
-                    b.HasIndex("EducationalMaterialId");
+                    b.HasIndex("EducationalSubjectId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Assignments");
                 });
@@ -65,6 +70,10 @@ namespace EducationAPI.Migrations
                     b.Property<int>("Grade")
                         .HasColumnType("int");
 
+                    b.Property<string>("Result")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AssignmentId")
@@ -73,7 +82,7 @@ namespace EducationAPI.Migrations
                     b.ToTable("AssignmentsResults");
                 });
 
-            modelBuilder.Entity("EducationAPI.Entities.EducationalMaterial", b =>
+            modelBuilder.Entity("EducationAPI.Entities.EducationalSubject", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,12 +98,9 @@ namespace EducationAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SourceUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.ToTable("EducationalMaterials");
+                    b.ToTable("EducationalSubjects");
                 });
 
             modelBuilder.Entity("EducationAPI.Entities.Role", b =>
@@ -122,9 +128,6 @@ namespace EducationAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AssignmentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -149,24 +152,47 @@ namespace EducationAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignmentId");
-
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("EducationalSubjectUser", b =>
+                {
+                    b.Property<int>("EducationalSubjectsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EducationalSubjectsId", "StudentsId");
+
+                    b.HasIndex("StudentsId");
+
+                    b.ToTable("EducationalSubjectUser");
+                });
+
             modelBuilder.Entity("EducationAPI.Entities.Assignment", b =>
                 {
-                    b.HasOne("EducationAPI.Entities.EducationalMaterial", null)
+                    b.HasOne("EducationAPI.Entities.EducationalSubject", "EducationalSubject")
                         .WithMany("Assignments")
-                        .HasForeignKey("EducationalMaterialId");
+                        .HasForeignKey("EducationalSubjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EducationAPI.Entities.User", "Student")
+                        .WithMany("UserAssignments")
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("EducationalSubject");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("EducationAPI.Entities.AssignmentResult", b =>
                 {
                     b.HasOne("EducationAPI.Entities.Assignment", "Assignment")
-                        .WithOne("Result")
+                        .WithOne("AssignmentResult")
                         .HasForeignKey("EducationAPI.Entities.AssignmentResult", "AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -176,10 +202,6 @@ namespace EducationAPI.Migrations
 
             modelBuilder.Entity("EducationAPI.Entities.User", b =>
                 {
-                    b.HasOne("EducationAPI.Entities.Assignment", null)
-                        .WithMany("AssignToUsers")
-                        .HasForeignKey("AssignmentId");
-
                     b.HasOne("EducationAPI.Entities.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
@@ -189,17 +211,34 @@ namespace EducationAPI.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("EducationAPI.Entities.Assignment", b =>
+            modelBuilder.Entity("EducationalSubjectUser", b =>
                 {
-                    b.Navigation("AssignToUsers");
+                    b.HasOne("EducationAPI.Entities.EducationalSubject", null)
+                        .WithMany()
+                        .HasForeignKey("EducationalSubjectsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Result")
+                    b.HasOne("EducationAPI.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("EducationAPI.Entities.EducationalMaterial", b =>
+            modelBuilder.Entity("EducationAPI.Entities.Assignment", b =>
+                {
+                    b.Navigation("AssignmentResult");
+                });
+
+            modelBuilder.Entity("EducationAPI.Entities.EducationalSubject", b =>
                 {
                     b.Navigation("Assignments");
+                });
+
+            modelBuilder.Entity("EducationAPI.Entities.User", b =>
+                {
+                    b.Navigation("UserAssignments");
                 });
 #pragma warning restore 612, 618
         }

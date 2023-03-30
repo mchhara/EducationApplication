@@ -1,18 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using EducationAPI.Entities;
 
-namespace EducationAPI.Models
+namespace EducationAPI.Models.EducationalSubjectDto
 {
-    public class CreateEducationalMaterialDto
+    public class EducationalSubjectDto
     {
         [Required]
         [MaxLength(15)]
         public string Name { get; set; }
         [Required]
-        [MaxLength(50)] 
+        [MaxLength(50)]
         public string Description { get; set; }
-        [Required]
-        public string? SourceUrl { get; set; }
-        public List<Assignment> Assignments { get; set; }
     }
 }

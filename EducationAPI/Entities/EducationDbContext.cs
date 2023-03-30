@@ -7,7 +7,7 @@ namespace EducationAPI.Entities
         private string _connectionString =
             "Server=DESKTOP-ALLUHR9;Database=EducationDb;Trusted_Connection=True;Encrypt=False;";
 
-        public DbSet<EducationalMaterial> EducationalMaterials { get; set; }
+        public DbSet<EducationalSubject> EducationalSubjects { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<AssignmentResult> AssignmentsResults { get; set; }
         public DbSet<User> Users { get; set; }
