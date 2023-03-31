@@ -4,6 +4,7 @@ using System.Reflection;
 using EducationAPI.Services.EducationalSubject;
 using EducationAPI.Middleware;
 using EducationAPI.Services;
+using EducationAPI.Services.User;
 using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 
 builder.Services.AddScoped<IEducationalSubjectServices, EducationalSubjectServices>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 
