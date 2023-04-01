@@ -17,7 +17,7 @@ namespace EducationAPI.Services.User
             _mapper = mapper;
         }
 
-        public IEnumerable<UserDto> GetAll()
+        public IEnumerable<UserResponseDto> GetAll()
         {
             var users = _dbContext
                 .Users
@@ -25,12 +25,12 @@ namespace EducationAPI.Services.User
 
             if (users == null) return null;
 
-            var usersDto = _mapper.Map<List<UserDto>>(users);
+            var usersDto = _mapper.Map<List<UserResponseDto>>(users);
 
             return usersDto;
         }
 
-        public UserDto GetUser(int userId)
+        public UserResponseDto GetUser(int userId)
         {
             var user = _dbContext
                 .Users
@@ -38,18 +38,18 @@ namespace EducationAPI.Services.User
 
             if (user == null) return null;
 
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = _mapper.Map<UserResponseDto>(user);
             
             return userDto;
         }
 
-        public UserDto Create(UserDto dto)
+        public UserResponseDto Create(UserDto dto)
         {
             var user = _mapper.Map<Entities.User>(dto);
 
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
-            return _mapper.Map<UserDto>(user);
+            return _mapper.Map<UserResponseDto>(user);
         }
 
         public bool Delete(int id)

@@ -19,7 +19,7 @@ namespace EducationAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<UserDto>> GetAllUsers()
+        public ActionResult<IEnumerable<UserResponseDto>> GetAllUsers()
         {
             var users = _userService.GetAll();
 
@@ -29,7 +29,7 @@ namespace EducationAPI.Controllers
         }
 
 
-        [HttpGet("{userId")]
+        [HttpGet("{userId:int}")]
         public IActionResult GetUser([FromRoute] int userId)
         {
             var user = _userService.GetUser(userId);
@@ -46,11 +46,12 @@ namespace EducationAPI.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var user = _userService.Create(dto);
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+
+            return Ok(user);
         }
 
 
-        [HttpDelete("{id:userId}")]
+        [HttpDelete("{userId:int}")]
         public IActionResult DeleteUser([FromRoute] int userId)
         {
             var isDeleted = _userService.Delete(userId);

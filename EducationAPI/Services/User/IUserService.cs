@@ -5,9 +5,9 @@ namespace EducationAPI.Services.User
 {
     public interface IUserService
     {
-        IEnumerable<UserDto> GetAll();
-        UserDto GetUser(int userId);
-        UserDto Create(UserDto dto);
+        IEnumerable<UserResponseDto> GetAll();
+        UserResponseDto GetUser(int userId);
+        UserResponseDto Create(UserDto dto);
         bool Update(UserDto dto, int id);
         bool Delete(int id);
     }

@@ -55,14 +55,14 @@ namespace EducationAPI.Services
 
         public IEnumerable<EducationalSubjectDtoResponse> GetAll()
         {
-            var educationalMaterial = _dbContext
+            var educationalSubjects = _dbContext
                 .EducationalSubjects
                 .Include(a => a.Assignments)
                 .ToList();
 
-            var educationalMaterialDtos = _mapper.Map<List<EducationalSubjectDtoResponse>>(educationalMaterial);
+            var educationalSubjectDtos = _mapper.Map<List<EducationalSubjectDtoResponse>>(educationalSubjects);
 
-            return educationalMaterialDtos;
+            return educationalSubjectDtos;
         }
 
 
@@ -98,6 +98,11 @@ namespace EducationAPI.Services
 
         public AssignmentResponseDto AddAssigmentToSubject(AssignmentDto dto, int subjectId)
         {
+            var subject = _dbContext
+                .EducationalSubjects
+                .FirstOrDefault(e => e.Id == subjectId);
+            if(subject == null) { return null; }
+
             dto.EducationalSubjectId = subjectId;
             var assignment = _mapper.Map<Entities.Assignment>(dto);
             var taskResponse = _mapper.Map<AssignmentResponseDto>(assignment);
@@ -106,9 +111,43 @@ namespace EducationAPI.Services
             _dbContext.SaveChanges();
             return taskResponse;
 
+        }
 
+        public bool DeleteAssignmentFromEducationalSubject(int subjectId, int taskId)
+        {
+            var task = _dbContext
+                .Assignments
+                .Where(a => a.AssignmentId == taskId && a.EducationalSubjectId == subjectId)
+                .FirstOrDefault();
 
+            if (task == null) return false;
 
+            _dbContext.Assignments.Remove(task);
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
+        //check it
+        public bool DeleteStudentFromEducationSubject(int subjectId, int studentId)
+        {
+            var subject = _dbContext
+                .EducationalSubjects
+                .FirstOrDefault(e => e.Id == subjectId);
+
+            if (subject == null) return false;
+
+            var student = _dbContext
+                .Users
+                .Where(s => s.EducationalSubjects.Contains(subject) && s.Id == studentId)
+                .FirstOrDefault();
+
+            if (student == null) return false;
+
+            student.EducationalSubjects.Remove(subject);
+            _dbContext.SaveChanges();
+
+            return true;
 
         }
     }

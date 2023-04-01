@@ -11,28 +11,29 @@ namespace EducationAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class EducationalSubjectController: ControllerBase
+    public class EducationalSubjectController : ControllerBase
     {
         private readonly IEducationalSubjectServices _educationalSubjectServices;
 
 
-        public EducationalSubjectController(IEducationalSubjectServices educationalSubjectServices )
+        public EducationalSubjectController(IEducationalSubjectServices educationalSubjectServices)
         {
             _educationalSubjectServices = educationalSubjectServices;
         }
 
 
 
+        // Endpoints for teacher's panel
 
         [HttpGet]
         public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllSubjects()
         {
-           var educationalMaterialDtos = _educationalSubjectServices.GetAll();
-           return Ok(educationalMaterialDtos);
+            var educationalMaterialDtos = _educationalSubjectServices.GetAll();
+            return Ok(educationalMaterialDtos);
         }
 
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public ActionResult GetSubject([FromRoute] int id)
         {
             var educationalMaterial = _educationalSubjectServices.GetById(id);
@@ -55,28 +56,30 @@ namespace EducationAPI.Controllers
             }
 
             var id = _educationalSubjectServices.Create(dto);
-           
 
-            return Created($"{id}",null);
+
+            return Created($"{id}", null);
         }
 
 
-        [HttpPost("{SubjectId}")]
-        public ActionResult AddAssigmentToSubject([FromBody] AssignmentDto dto, [FromRoute] int SubjectId)
+        [HttpPost("{subjectId:int}")]
+        public ActionResult AddAssigmentToSubject([FromBody] AssignmentDto dto, [FromRoute] int subjectId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            
-            var id = _educationalSubjectServices.AddAssigmentToSubject(dto, SubjectId);
+
+            var id = _educationalSubjectServices.AddAssigmentToSubject(dto, subjectId);
+
+            if (id == null) return NotFound();
 
             return Created($"{id}", null);
         }
 
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public ActionResult Delete([FromRoute] int id)
         {
             var isDeleted = _educationalSubjectServices.Delete(id);
@@ -90,7 +93,7 @@ namespace EducationAPI.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public ActionResult Update([FromBody] EducationalSubjectDto dto, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
@@ -108,8 +111,31 @@ namespace EducationAPI.Controllers
         }
 
 
-        
+        [HttpDelete("{subjectId:int}/assignment/{assignmentId:int}")]
+        public ActionResult DeleteAssignmentFromEducationSubject([FromRoute] int subjectId, [FromRoute] int assignmentId)
+        {
+            var isDeleted = _educationalSubjectServices.DeleteAssignmentFromEducationalSubject(subjectId, assignmentId);
 
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
+        [HttpDelete("{subjectId:int}/student{studentId}")]
+        public ActionResult DeleteStudentFromEducationSubject([FromRoute] int subjectId, [FromRoute] int studentId)
+        {
+            var isDeleted = _educationalSubjectServices.DeleteStudentFromEducationSubject(subjectId, studentId);
+
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
 
 
 

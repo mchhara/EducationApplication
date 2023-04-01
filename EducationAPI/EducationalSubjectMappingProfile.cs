@@ -16,7 +16,7 @@ namespace EducationAPI
             CreateMap<Assignment, AssignmentResponseDto>();
             CreateMap<AssignmentDto, Assignment>();
 
-            CreateMap<User, UserDto>();
+            CreateMap<User, UserResponseDto>();
             CreateMap<UserDto, User>();
 
             CreateMap<AssignmentResult, AssignmentResultDto>();

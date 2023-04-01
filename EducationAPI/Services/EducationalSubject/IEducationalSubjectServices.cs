@@ -11,5 +11,7 @@ namespace EducationAPI.Services.EducationalSubject
         bool Delete(int id);
         bool Update(EducationalSubjectDto dto, int id);
         AssignmentResponseDto AddAssigmentToSubject(AssignmentDto dto, int projectId);
+        bool DeleteAssignmentFromEducationalSubject(int subjectId,int taskId);
+        bool DeleteStudentFromEducationSubject(int subjectId, int studentId);
     }
 }

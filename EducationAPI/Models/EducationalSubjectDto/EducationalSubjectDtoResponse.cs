@@ -9,8 +9,8 @@ namespace EducationAPI.Models.EducationalSubjectDto
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<AssignmentDto> Assignments { get; set; }
-        public List<UserDto> Students { get; set; }
+        public List<AssignmentResponseDto> Assignments { get; set; }
+        public List<UserResponseDto> Students { get; set; }
 
     }
 }
