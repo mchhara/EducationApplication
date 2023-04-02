@@ -62,7 +62,7 @@ namespace EducationAPI.Controllers
         }
 
 
-        [HttpPost("{subjectId:int}")]
+        [HttpPost("{subjectId:int}/assignment")]
         public ActionResult AddAssigmentToSubject([FromBody] AssignmentDto dto, [FromRoute] int subjectId)
         {
             if (!ModelState.IsValid)
@@ -94,13 +94,13 @@ namespace EducationAPI.Controllers
 
 
         [HttpPut("{id:int}")]
-        public ActionResult Update([FromBody] EducationalSubjectDto dto, [FromRoute] int id)
+        public ActionResult UpdateEducationalSubject([FromBody] EducationalSubjectDto dto, [FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var result = _educationalSubjectServices.Update(dto, id);
+            var result = _educationalSubjectServices.UpdateEducationalSubject(dto, id);
 
             if (!result)
             {
@@ -124,7 +124,7 @@ namespace EducationAPI.Controllers
             return NotFound();
         }
 
-        [HttpDelete("{subjectId:int}/student{studentId}")]
+        [HttpDelete("{subjectId:int}/student/{studentId}")]
         public ActionResult DeleteStudentFromEducationSubject([FromRoute] int subjectId, [FromRoute] int studentId)
         {
             var isDeleted = _educationalSubjectServices.DeleteStudentFromEducationSubject(subjectId, studentId);
@@ -137,10 +137,53 @@ namespace EducationAPI.Controllers
             return NotFound();
         }
 
+        [HttpPut("{subjectId}/assignment/{assignmentId}")]
+        public ActionResult EditAssignment([FromRoute] int subjectId, [FromRoute] int assignmentId, [FromBody] AssignmentDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            var result = _educationalSubjectServices.EditAssignment(subjectId, assignmentId, dto);
 
+            if (!result)
+            {
+                return NotFound();
+            }
 
+            return Ok();
 
+        }
 
+        [HttpPut("{subjectId}/student/{studentId}")]
+        public ActionResult AddStudentToEducationalSubject([FromRoute] int subjectId, [FromRoute] int studentId)
+        {
+           
+            var result = _educationalSubjectServices.AddStudentToEducationalSubject(subjectId, studentId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+
+        }
+
+        [HttpPut("/task{assignmentId}/student{studentId}")]
+        public ActionResult AddStudentToAssignment([FromRoute] int assignmentId, [FromRoute] int studentId)
+        {
+
+            var result = _educationalSubjectServices.AddStudentToAssignment(assignmentId, studentId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+
+        }
 
 
 
