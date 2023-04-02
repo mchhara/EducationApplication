@@ -10,6 +10,7 @@ namespace EducationAPI.Entities
         public DbSet<EducationalSubject> EducationalSubjects { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<AssignmentResult> AssignmentsResults { get; set; }
+        public DbSet<EducationalSubjectUser> EducationalSubjectUsers { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 

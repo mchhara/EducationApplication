@@ -1,6 +1,8 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using AutoMapper;
+using AutoMapper.Execution;
 using EducationAPI.Entities;
 using EducationAPI.Models.Assignment;
 using EducationAPI.Models.EducationalSubjectDto;
@@ -76,7 +78,7 @@ namespace EducationAPI.Services
         }
 
 
-        public bool Update(EducationalSubjectDto dto, int id)
+        public bool UpdateEducationalSubject(EducationalSubjectDto dto, int id)
         {
 
             var educationalSubject = _dbContext
@@ -137,18 +139,105 @@ namespace EducationAPI.Services
 
             if (subject == null) return false;
 
-            var student = _dbContext
-                .Users
-                .Where(s => s.EducationalSubjects.Contains(subject) && s.Id == studentId)
-                .FirstOrDefault();
+            var xd = _dbContext
+                .EducationalSubjectUsers
+                .FirstOrDefault(s => s.StudentId == studentId && s.EducationalSubjectId == subjectId);
 
-            if (student == null) return false;
+            if (xd == null) return false;
 
-            student.EducationalSubjects.Remove(subject);
+            //var student = _dbContext
+            //    .Users
+            //    .Where(s => s.EducationalSubjectUser.Contains(subject) && s.Id == studentId)
+            //    .FirstOrDefault();
+
+            //if (student == null) return false;
+
+
+
+            subject.EducationalSubjectUsers.Remove(xd);
             _dbContext.SaveChanges();
 
             return true;
 
         }
+
+       public bool EditAssignment(int subjectId, int assignmentId, AssignmentDto dto)
+        {
+            var assignment = _dbContext
+                .Assignments
+                .Where(e =>e.AssignmentId == assignmentId && e.EducationalSubjectId == subjectId)
+                .FirstOrDefault();
+
+            if (assignment == null) return false;
+
+            assignment.Title = dto.Title;
+            assignment.Description = dto.Description;
+            assignment.Deadline = dto.Deadline;
+            assignment.EducationalSubjectId = dto.EducationalSubjectId;
+
+            _dbContext.SaveChanges();
+
+            return true;
+
+        }
+
+
+        public bool AddStudentToEducationalSubject(int subjectId, int studentId)
+        {
+
+            var subject = _dbContext
+                .EducationalSubjects
+                .Include(e => e.EducationalSubjectUsers)
+                .FirstOrDefault(x => x.Id == subjectId);
+
+            var student = _dbContext
+                .Users
+                .Include(e => e.EducationalSubjectUsers)
+                .FirstOrDefault(x => x.Id == studentId);
+
+            if (subject == null || student == null) { return false; }
+
+
+            bool ifExistsInSubject = _dbContext.EducationalSubjectUsers
+                .Any(s => s.StudentId == studentId && s.EducationalSubjectId == subjectId);
+
+            if (ifExistsInSubject) { return false; }
+
+            subject.EducationalSubjectUsers.Add(
+                new EducationalSubjectUser()
+                {
+                    StudentId = studentId,
+                    EducationalSubjectId = subjectId
+                });
+
+            _dbContext.SaveChanges();
+            return true;
+        }
+
+        public bool AddStudentToAssignment(int assignmentId, int studentId)
+        {
+            var assignment = _dbContext
+                .Assignments
+                .FirstOrDefault(x => x.AssignmentId == assignmentId);
+
+            var student = _dbContext
+                .Users
+                .Include(u => u.UserAssignments)
+                .FirstOrDefault(x => x.Id == studentId);
+
+            if (assignment == null || student == null) { return false; }
+
+
+            bool ifExistsAssignment = _dbContext.Assignments
+                .Any(s => s.StudentId == studentId && s.AssignmentId == assignmentId);
+
+            if (ifExistsAssignment) { return false; }
+
+            student.UserAssignments.Add(assignment);
+
+            _dbContext.SaveChanges();
+            return true;
+        }
+
     }
 }
