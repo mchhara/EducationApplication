@@ -62,7 +62,7 @@ namespace EducationAPI.Controllers
         }
 
 
-        [HttpPost("{subjectId:int}/assignment")]
+        [HttpPost("{subjectId:int}/Assignment")]
         public ActionResult AddAssigmentToSubject([FromBody] AssignmentDto dto, [FromRoute] int subjectId)
         {
             if (!ModelState.IsValid)
@@ -111,10 +111,10 @@ namespace EducationAPI.Controllers
         }
 
 
-        [HttpDelete("{subjectId:int}/assignment/{assignmentId:int}")]
-        public ActionResult DeleteAssignmentFromEducationSubject([FromRoute] int subjectId, [FromRoute] int assignmentId)
+        [HttpDelete("/Assignment/{assignmentId:int}")]
+        public ActionResult DeleteAssignmentFromEducationSubject([FromRoute] int assignmentId)
         {
-            var isDeleted = _educationalSubjectServices.DeleteAssignmentFromEducationalSubject(subjectId, assignmentId);
+            var isDeleted = _educationalSubjectServices.DeleteAssignmentFromEducationalSubject(assignmentId);
 
             if (isDeleted)
             {
@@ -124,7 +124,7 @@ namespace EducationAPI.Controllers
             return NotFound();
         }
 
-        [HttpDelete("{subjectId:int}/student/{studentId}")]
+        [HttpDelete("{subjectId:int}/Student/{studentId}")]
         public ActionResult DeleteStudentFromEducationSubject([FromRoute] int subjectId, [FromRoute] int studentId)
         {
             var isDeleted = _educationalSubjectServices.DeleteStudentFromEducationSubject(subjectId, studentId);
@@ -137,14 +137,14 @@ namespace EducationAPI.Controllers
             return NotFound();
         }
 
-        [HttpPut("{subjectId}/assignment/{assignmentId}")]
-        public ActionResult EditAssignment([FromRoute] int subjectId, [FromRoute] int assignmentId, [FromBody] AssignmentDto dto)
+        [HttpPut("/Assignment/{assignmentId}")]
+        public ActionResult EditAssignment([FromRoute] int assignmentId, [FromBody] AssignmentDto dto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            var result = _educationalSubjectServices.EditAssignment(subjectId, assignmentId, dto);
+            var result = _educationalSubjectServices.EditAssignment(assignmentId, dto);
 
             if (!result)
             {
@@ -155,7 +155,7 @@ namespace EducationAPI.Controllers
 
         }
 
-        [HttpPut("{subjectId}/student/{studentId}")]
+        [HttpPut("{subjectId}/Student/{studentId}")]
         public ActionResult AddStudentToEducationalSubject([FromRoute] int subjectId, [FromRoute] int studentId)
         {
            
@@ -170,7 +170,7 @@ namespace EducationAPI.Controllers
 
         }
 
-        [HttpPut("/task{assignmentId}/student{studentId}")]
+        [HttpPut("/Task{assignmentId}/Student{studentId}")]
         public ActionResult AddStudentToAssignment([FromRoute] int assignmentId, [FromRoute] int studentId)
         {
 

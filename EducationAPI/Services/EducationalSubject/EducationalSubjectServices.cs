@@ -115,11 +115,11 @@ namespace EducationAPI.Services
 
         }
 
-        public bool DeleteAssignmentFromEducationalSubject(int subjectId, int taskId)
+        public bool DeleteAssignmentFromEducationalSubject(int taskId)
         {
             var task = _dbContext
                 .Assignments
-                .Where(a => a.AssignmentId == taskId && a.EducationalSubjectId == subjectId)
+                .Where(a => a.AssignmentId == taskId)
                 .FirstOrDefault();
 
             if (task == null) return false;
@@ -139,11 +139,11 @@ namespace EducationAPI.Services
 
             if (subject == null) return false;
 
-            var xd = _dbContext
+            var user = _dbContext
                 .EducationalSubjectUsers
                 .FirstOrDefault(s => s.StudentId == studentId && s.EducationalSubjectId == subjectId);
 
-            if (xd == null) return false;
+            if (user == null) return false;
 
             //var student = _dbContext
             //    .Users
@@ -154,18 +154,18 @@ namespace EducationAPI.Services
 
 
 
-            subject.EducationalSubjectUsers.Remove(xd);
+            subject.EducationalSubjectUsers.Remove(user);
             _dbContext.SaveChanges();
 
             return true;
 
         }
 
-       public bool EditAssignment(int subjectId, int assignmentId, AssignmentDto dto)
+       public bool EditAssignment(int assignmentId, AssignmentDto dto)
         {
             var assignment = _dbContext
                 .Assignments
-                .Where(e =>e.AssignmentId == assignmentId && e.EducationalSubjectId == subjectId)
+                .Where(e =>e.AssignmentId == assignmentId)
                 .FirstOrDefault();
 
             if (assignment == null) return false;
