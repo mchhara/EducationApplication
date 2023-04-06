@@ -213,5 +213,17 @@ namespace EducationAPI.Controllers
         }
 
 
+        [HttpPut("/Assignment/{assignmentId}/User/{userId}/Grade/{gradeValue}")]
+        public ActionResult AddUserGradeToAssignment(int assignmentId, int userId, int gradeValue)
+        {
+            var result = _educationalSubjectServices.AddUserGradeToAssignment(assignmentId, userId, gradeValue);
+
+            if (result == false)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
     }
 }
