@@ -295,6 +295,26 @@ namespace EducationAPI.Services
             return userGradeResults;
         }
 
+        public bool AddUserGradeToAssignment(int assignmentId, int userId, int gradeValue)
+        {
+            var assignmentUser = _dbContext.AssignmentUsers.FirstOrDefault(au => au.StudentId == userId && au.AssignmentId == assignmentId);
+            if (assignmentUser == null)
+            {
+                return false;
+            }
+
+            var existingResult = _dbContext.AssignmentResults.FirstOrDefault(ar => ar.AssignmentUserId == assignmentUser.Id);
+            
+            if (existingResult == null)
+            {
+                return false;            }
+            
+            existingResult.Grade = gradeValue;
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
 
     }
 }
