@@ -1,5 +1,6 @@
 ﻿using EducationAPI.Models.Assignment;
 using EducationAPI.Models.EducationalSubjectDto;
+using EducationAPI.Models.User;
 
 namespace EducationAPI.Services.EducationalSubject
 {
@@ -16,5 +17,7 @@ namespace EducationAPI.Services.EducationalSubject
         bool EditAssignment(int assignmentId, AssignmentDto dto);
         bool AddStudentToEducationalSubject(int subjectId, int studentId);
         bool AddStudentToAssignment(int assignmentId, int studentId);
+        IEnumerable<UserGradeResult> GetUsersGrades();
+        IEnumerable<UserGradeResult> GetUserGrades(int userId);
     }
 }

@@ -5,7 +5,8 @@
         public int Id { get; set; }
         public int Grade { get; set; }
         public string Result { get; set; }
-        public Assignment Assignment { get; set; }
-        public int AssignmentId { get; set; }
+        public AssignmentUser AssignmentUser { get; set; }
+        public int AssignmentUserId { get; set; }
+
     }
 }
