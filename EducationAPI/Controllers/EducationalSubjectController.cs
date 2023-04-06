@@ -186,6 +186,32 @@ namespace EducationAPI.Controllers
         }
 
 
+        [HttpGet("/UserGrades")]
+        public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllUsersAndGrades()
+        {
+            var result = _educationalSubjectServices.GetUsersGrades();
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("/UserGrades/{userId}")]
+        public ActionResult GetUserAndGrades(int userId)
+        {
+            var result = _educationalSubjectServices.GetUserGrades(userId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
 
     }
 }

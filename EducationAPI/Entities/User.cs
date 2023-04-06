@@ -12,7 +12,7 @@ namespace EducationAPI.Entities
         public string Password { get; set; }
         public int RoleId { get; set; }
         public  Role Role { get; set; }
-        public List<Assignment> UserAssignments { get; set; }
+        public List<AssignmentUser> AssignmentsUser { get; set; }
         public List<EducationalSubjectUser> EducationalSubjectUsers { get; set; }
 
 

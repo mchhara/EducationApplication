@@ -6,6 +6,7 @@ using AutoMapper.Execution;
 using EducationAPI.Entities;
 using EducationAPI.Models.Assignment;
 using EducationAPI.Models.EducationalSubjectDto;
+using EducationAPI.Models.User;
 using EducationAPI.Services.EducationalSubject;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ namespace EducationAPI.Services
         private readonly EducationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public EducationalSubjectServices( EducationDbContext dbContext, IMapper mapper)
+        public EducationalSubjectServices(EducationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -73,7 +74,7 @@ namespace EducationAPI.Services
             var educationalMaterial = _mapper.Map<Entities.EducationalSubject>(dto);
             _dbContext.EducationalSubjects.Add(educationalMaterial);
             _dbContext.SaveChanges();
-            
+
             return educationalMaterial.Id;
         }
 
@@ -86,10 +87,10 @@ namespace EducationAPI.Services
                 .FirstOrDefault(e => e.Id == id);
 
             if (educationalSubject == null) return false;
-           
+
             educationalSubject.Name = dto.Name;
             educationalSubject.Description = dto.Description;
-            
+
             _dbContext.SaveChanges();
 
             return true;
@@ -103,12 +104,12 @@ namespace EducationAPI.Services
             var subject = _dbContext
                 .EducationalSubjects
                 .FirstOrDefault(e => e.Id == subjectId);
-            if(subject == null) { return null; }
+            if (subject == null) { return null; }
 
             dto.EducationalSubjectId = subjectId;
             var assignment = _mapper.Map<Entities.Assignment>(dto);
             var taskResponse = _mapper.Map<AssignmentResponseDto>(assignment);
-            
+
             _dbContext.Assignments.Add(assignment);
             _dbContext.SaveChanges();
             return taskResponse;
@@ -119,7 +120,7 @@ namespace EducationAPI.Services
         {
             var task = _dbContext
                 .Assignments
-                .Where(a => a.AssignmentId == taskId)
+                .Where(a => a.Id == taskId)
                 .FirstOrDefault();
 
             if (task == null) return false;
@@ -161,11 +162,11 @@ namespace EducationAPI.Services
 
         }
 
-       public bool EditAssignment(int assignmentId, AssignmentDto dto)
+        public bool EditAssignment(int assignmentId, AssignmentDto dto)
         {
             var assignment = _dbContext
                 .Assignments
-                .Where(e =>e.AssignmentId == assignmentId)
+                .Where(e => e.Id == assignmentId)
                 .FirstOrDefault();
 
             if (assignment == null) return false;
@@ -217,27 +218,84 @@ namespace EducationAPI.Services
         public bool AddStudentToAssignment(int assignmentId, int studentId)
         {
             var assignment = _dbContext
-                .Assignments
-                .FirstOrDefault(x => x.AssignmentId == assignmentId);
+               .Assignments
+               .Include(u => u.AssignmentUsers)
+               .FirstOrDefault(x => x.Id == assignmentId);
 
             var student = _dbContext
                 .Users
-                .Include(u => u.UserAssignments)
+                .Include(u => u.AssignmentsUser)
                 .FirstOrDefault(x => x.Id == studentId);
 
             if (assignment == null || student == null) { return false; }
 
 
-            bool ifExistsAssignment = _dbContext.Assignments
+            bool ifExistsAssignment = _dbContext.AssignmentUsers
                 .Any(s => s.StudentId == studentId && s.AssignmentId == assignmentId);
 
             if (ifExistsAssignment) { return false; }
 
-            student.UserAssignments.Add(assignment);
+            student.AssignmentsUser.Add(
+                new AssignmentUser()
+                {
+                    StudentId = studentId,
+                    AssignmentId = assignmentId
+                });
 
             _dbContext.SaveChanges();
             return true;
         }
 
+
+        public IEnumerable<UserGradeResult> GetUsersGrades()
+        {
+            var query = from user in _dbContext.Users
+                        join assignmentUser in _dbContext.AssignmentUsers on user.Id equals assignmentUser.StudentId
+                        join assignment in _dbContext.Assignments on assignmentUser.AssignmentId equals assignment.Id
+                        join educationalSubject in _dbContext.EducationalSubjects on assignment.EducationalSubjectId equals educationalSubject.Id
+                        join assignmentResult in _dbContext.AssignmentResults on assignmentUser.Id equals assignmentResult.AssignmentUserId
+                        select new { user.Id, user.FirstName, educationalSubject.Name, assignmentResult.Grade, assignment.Title };
+
+            if (query == null) return null;
+
+            return query.Select(x => new UserGradeResult
+            {
+                UserID = x.Id,
+                UserName = x.FirstName,
+                Grade = x.Grade,
+                EducationalMaterialName = x.Name,
+                AssignmentName = x.Title
+            }).ToList();
+        }
+
+        public IEnumerable<UserGradeResult> GetUserGrades(int userId)
+        {
+            var query = from user in _dbContext.Users
+                        where user.Id == userId
+                        join assignmentUser in _dbContext.AssignmentUsers on user.Id equals assignmentUser.StudentId
+                        join assignment in _dbContext.Assignments on assignmentUser.AssignmentId equals assignment.Id
+                        join educationalSubject in _dbContext.EducationalSubjects on assignment.EducationalSubjectId equals educationalSubject.Id
+                        join assignmentResult in _dbContext.AssignmentResults on assignmentUser.Id equals assignmentResult.AssignmentUserId
+                        select new { user.Id, user.FirstName, educationalSubject.Name, assignmentResult.Grade, assignment.Title };
+
+            if (query == null) return null;
+
+            var userGradeResults = query.Select(x => new UserGradeResult
+            {
+                UserID = x.Id,
+                UserName = x.FirstName,
+                Grade = x.Grade,
+                EducationalMaterialName = x.Name,
+                AssignmentName = x.Title
+            });
+
+            if (userGradeResults == null) { return null; }
+
+
+            return userGradeResults;
+        }
+
+
     }
 }
+

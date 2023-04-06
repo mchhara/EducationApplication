@@ -9,6 +9,5 @@ namespace EducationAPI.Models.Assignment
         public string Description { get; set; }
         public DateTime Deadline { get; set; }
         public int EducationalSubjectId { get; set; }
-        public int? StudentId { get; set; }
     }
 }
