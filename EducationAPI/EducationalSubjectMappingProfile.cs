@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EducationAPI.Entities;
 using EducationAPI.Models.Assignment;
+using EducationAPI.Models.AssignmentResult;
 using EducationAPI.Models.EducationalSubjectDto;
 using EducationAPI.Models.User;
 
@@ -19,7 +20,7 @@ namespace EducationAPI
             CreateMap<User, UserResponseDto>();
             CreateMap<UserDto, User>();
 
-            CreateMap<AssignmentResult, AssignmentResultDto>();
+            CreateMap<AssignmentResult, AssignmentResultResponseDto>();
             CreateMap<AssignmentResultDto, AssignmentResult>();
 
         }

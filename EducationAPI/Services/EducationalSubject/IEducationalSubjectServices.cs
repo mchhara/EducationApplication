@@ -1,4 +1,5 @@
 ﻿using EducationAPI.Models.Assignment;
+using EducationAPI.Models.AssignmentResult;
 using EducationAPI.Models.EducationalSubjectDto;
 using EducationAPI.Models.User;
 
@@ -23,5 +24,6 @@ namespace EducationAPI.Services.EducationalSubject
         bool DeleteUserGradeToAssignment(int assignmentId, int studentId);
         IEnumerable<EducationalSubjectDtoResponse> GetAllUserSubjects(int studentId);
         EducationalSubjectDtoResponse GetUserSubject(int materialId, int studentId);
+        int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId);
     }
 }

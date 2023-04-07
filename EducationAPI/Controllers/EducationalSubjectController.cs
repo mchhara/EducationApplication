@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EducationAPI.Entities;
 using EducationAPI.Models.Assignment;
+using EducationAPI.Models.AssignmentResult;
 using EducationAPI.Models.EducationalSubjectDto;
 using EducationAPI.Services;
 using EducationAPI.Services.EducationalSubject;
@@ -257,6 +258,20 @@ namespace EducationAPI.Controllers
             return Ok(educationalMaterialDtos);
         }
 
+        [HttpPost("/Assignment/{assignmentId}/Student/{studentId}")]
+        public ActionResult AddAssignmentSolution([FromBody] AssignmentResultDto dto,[FromRoute] int  assignmentId, [FromRoute] int studentId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var id = _educationalSubjectServices.AddAssignmentSolution(dto, assignmentId, studentId);
+
+            if(id == -1) return BadRequest(ModelState);
+
+            return Created($"{id}", null);
+        }
 
     }
 }

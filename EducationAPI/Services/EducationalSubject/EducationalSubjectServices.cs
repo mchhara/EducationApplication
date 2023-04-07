@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.Execution;
 using EducationAPI.Entities;
 using EducationAPI.Models.Assignment;
+using EducationAPI.Models.AssignmentResult;
 using EducationAPI.Models.EducationalSubjectDto;
 using EducationAPI.Models.User;
 using EducationAPI.Services.EducationalSubject;
@@ -381,6 +382,24 @@ namespace EducationAPI.Services
             var result = _mapper.Map<EducationalSubjectDtoResponse>(educationalMaterial);
             return result;
         }
+
+        public int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId)
+        {
+            var assignmentUser = _dbContext
+               .AssignmentUsers
+               .FirstOrDefault(e => e.StudentId == studentId && e.AssignmentId == assignmentId);
+            if (assignmentUser == null || assignmentUser.AssignmentResult != null) return -1;
+
+            var assignmentResult = _mapper.Map<Entities.AssignmentResult>(dto);
+            
+            assignmentResult.AssignmentUser = assignmentUser;
+
+            _dbContext.AssignmentResults.Add(assignmentResult);
+            _dbContext.SaveChanges();
+
+            return assignmentResult.Id;  
+        }
+
     }
 }
 
