@@ -360,6 +360,27 @@ namespace EducationAPI.Services
 
             return educationalSubjectDtos;
         }
+
+
+        public EducationalSubjectDtoResponse GetUserSubject(int materialId, int studentId) 
+        {
+
+            var educationalMaterial = _dbContext.EducationalSubjects
+            .Include(e => e.Assignments)
+            .ThenInclude(a => a.AssignmentUsers)
+            .ThenInclude(au => au.Student)
+            .FirstOrDefault(e => e.Id == materialId &&
+                e.EducationalSubjectUsers.Any(esu => esu.StudentId == studentId) &&
+                e.Assignments.Any(a => a.AssignmentUsers.Any(au => au.StudentId == studentId)));
+
+            if (educationalMaterial == null)
+            {
+                return null;
+            }
+
+            var result = _mapper.Map<EducationalSubjectDtoResponse>(educationalMaterial);
+            return result;
+        }
     }
 }
 
