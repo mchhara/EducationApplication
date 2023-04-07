@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using AutoMapper;
@@ -336,8 +337,28 @@ namespace EducationAPI.Services
             existingResult.Grade = 0;
 
             _dbContext.SaveChanges();
-
             return true;
+        }
+
+
+        public IEnumerable<EducationalSubjectDtoResponse> GetAllUserSubjects(int studentId)
+        {
+
+            var educationalSubjects = _dbContext
+             .EducationalSubjects
+             .Include(e => e.Assignments)
+             .ThenInclude(a => a.AssignmentUsers)
+             .Where(e => e.EducationalSubjectUsers.Any(u => u.StudentId == studentId))
+             .ToList();
+
+            educationalSubjects.ForEach(e =>
+            {
+                e.Assignments = e.Assignments.Where(a => a.AssignmentUsers.Any(au => au.StudentId == studentId)).ToList();
+            });
+
+            var educationalSubjectDtos = _mapper.Map<List<EducationalSubjectDtoResponse>>(educationalSubjects);
+
+            return educationalSubjectDtos;
         }
     }
 }
