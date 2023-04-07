@@ -241,10 +241,18 @@ namespace EducationAPI.Controllers
 
         // Endpoints for student's panel
 
-        [HttpGet("/StudentMaterials/{studentId}")]
+        [HttpGet("/StudentMaterials/Student/{studentId}")]
         public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllUserSubjects([FromRoute] int studentId)
         {
             var educationalMaterialDtos = _educationalSubjectServices.GetAllUserSubjects(studentId);
+
+            return Ok(educationalMaterialDtos);
+        }
+
+        [HttpGet("/StudentMaterials/{materialId}/Student/{studentId}")]
+        public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllUserSubjects([FromRoute] int materialId, [FromRoute] int studentId)
+        {
+            var educationalMaterialDtos = _educationalSubjectServices.GetUserSubject(materialId, studentId);
 
             return Ok(educationalMaterialDtos);
         }
