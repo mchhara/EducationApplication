@@ -316,6 +316,29 @@ namespace EducationAPI.Services
             return true;
         }
 
+
+        public bool DeleteUserGradeToAssignment(int assignmentId, int studentId)
+        {
+            var assignmentUser = _dbContext.AssignmentUsers.FirstOrDefault(au => au.StudentId == studentId && au.AssignmentId == assignmentId);
+
+            if (assignmentUser == null)
+            {
+                return false;
+            }
+
+            var existingResult = _dbContext.AssignmentResults.FirstOrDefault(ar => ar.AssignmentUserId == assignmentUser.Id);
+            
+            if (existingResult == null)
+            {
+                return false;
+            }
+
+            existingResult.Grade = 0;
+
+            _dbContext.SaveChanges();
+
+            return true;
+        }
     }
 }
 

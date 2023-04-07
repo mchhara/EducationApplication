@@ -213,10 +213,10 @@ namespace EducationAPI.Controllers
         }
 
 
-        [HttpPut("/Assignment/{assignmentId}/User/{userId}/Grade/{gradeValue}")]
-        public ActionResult AddUserGradeToAssignment(int assignmentId, int userId, int gradeValue)
+        [HttpPut("/Assignment/{assignmentId}/Student/{studentId}/Grade/{gradeValue}")]
+        public ActionResult AddUserGradeToAssignment(int assignmentId, int studentId, int gradeValue)
         {
-            var result = _educationalSubjectServices.AddUserGradeToAssignment(assignmentId, userId, gradeValue);
+            var result = _educationalSubjectServices.AddUserGradeToAssignment(assignmentId, studentId, gradeValue);
 
             if (result == false)
             {
@@ -225,5 +225,19 @@ namespace EducationAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("/Assignment/{assignmentId}/Student/{studentId}")]
+        public ActionResult DeleteUserGradeToAssignment(int assignmentId, int studentId)
+        {
+            var isDeleted = _educationalSubjectServices.DeleteUserGradeToAssignment(assignmentId, studentId);
+
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
     }
 }
