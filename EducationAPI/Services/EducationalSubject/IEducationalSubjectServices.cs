@@ -21,5 +21,6 @@ namespace EducationAPI.Services.EducationalSubject
         IEnumerable<UserGradeResult> GetUserGrades(int userId);
         bool AddUserGradeToAssignment(int assignmentId, int userId, int gradeValue);
         bool DeleteUserGradeToAssignment(int assignmentId, int studentId);
+        IEnumerable<EducationalSubjectDtoResponse> GetAllUserSubjects(int studentId);
     }
 }
