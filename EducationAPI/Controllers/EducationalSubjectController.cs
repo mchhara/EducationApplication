@@ -273,5 +273,23 @@ namespace EducationAPI.Controllers
             return Created($"{id}", null);
         }
 
+        [HttpPut("/Assignment/{assignmentId}/Student/{studentId}")]
+        public ActionResult EditAssignmentSolution([FromBody] AssignmentResultDto dto, [FromRoute] int assignmentId, [FromRoute] int studentId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = _educationalSubjectServices.EditAssignment(dto, assignmentId, studentId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
     }
 }
