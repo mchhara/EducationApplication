@@ -400,6 +400,23 @@ namespace EducationAPI.Services
             return assignmentResult.Id;  
         }
 
+
+        public bool EditAssignment(AssignmentResultDto dto, int assignmentId, int studentId)
+        {
+            var assignmentResult = _dbContext.AssignmentResults
+                .Include(ar => ar.AssignmentUser)
+                .ThenInclude(au => au.Assignment)
+                .FirstOrDefault(ar => ar.AssignmentUser.StudentId == studentId && ar.AssignmentUser.AssignmentId == assignmentId);
+
+            if (assignmentResult == null) return false;
+
+            _mapper.Map(dto, assignmentResult);
+            _dbContext.SaveChanges();
+
+            return true;
+
+        }
+
     }
 }
 
