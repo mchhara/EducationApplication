@@ -25,6 +25,7 @@ namespace EducationAPI.Services.EducationalSubject
         IEnumerable<EducationalSubjectDtoResponse> GetAllUserSubjects(int studentId);
         EducationalSubjectDtoResponse GetUserSubject(int materialId, int studentId);
         int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId);
-        bool EditAssignment(AssignmentResultDto dto, int assignmentId, int studentId);
+        bool EditAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId);
+        bool DeleteAssignmentSolution( int assignmentId, int studentId);
     }
 }
