@@ -401,7 +401,7 @@ namespace EducationAPI.Services
         }
 
 
-        public bool EditAssignment(AssignmentResultDto dto, int assignmentId, int studentId)
+        public bool EditAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId)
         {
             var assignmentResult = _dbContext.AssignmentResults
                 .Include(ar => ar.AssignmentUser)
@@ -415,6 +415,22 @@ namespace EducationAPI.Services
 
             return true;
 
+        }
+
+
+        public bool DeleteAssignmentSolution( int assignmentId, int studentId)
+        {
+            var assignmentResult = _dbContext.AssignmentResults
+                            .Include(ar => ar.AssignmentUser)
+                            .ThenInclude(au => au.Assignment)
+                            .FirstOrDefault(ar => ar.AssignmentUser.StudentId == studentId && ar.AssignmentUser.AssignmentId == assignmentId);
+
+            if (assignmentResult == null) return false;
+
+            _dbContext.AssignmentResults.Remove(assignmentResult);
+            _dbContext.SaveChanges();
+
+            return true;
         }
 
     }

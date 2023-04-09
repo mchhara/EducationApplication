@@ -258,7 +258,7 @@ namespace EducationAPI.Controllers
             return Ok(educationalMaterialDtos);
         }
 
-        [HttpPost("/Assignment/{assignmentId}/Student/{studentId}")]
+        [HttpPost("/Assignment/{assignmentId}/Student/{studentId}/AssignmentSolution")]
         public ActionResult AddAssignmentSolution([FromBody] AssignmentResultDto dto,[FromRoute] int  assignmentId, [FromRoute] int studentId)
         {
             if (!ModelState.IsValid)
@@ -273,7 +273,7 @@ namespace EducationAPI.Controllers
             return Created($"{id}", null);
         }
 
-        [HttpPut("/Assignment/{assignmentId}/Student/{studentId}")]
+        [HttpPut("/Assignment/{assignmentId}/Student/{studentId}/AssignmentSolution")]
         public ActionResult EditAssignmentSolution([FromBody] AssignmentResultDto dto, [FromRoute] int assignmentId, [FromRoute] int studentId)
         {
             if (!ModelState.IsValid)
@@ -281,7 +281,27 @@ namespace EducationAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = _educationalSubjectServices.EditAssignment(dto, assignmentId, studentId);
+            var result = _educationalSubjectServices.EditAssignmentSolution(dto, assignmentId, studentId);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+
+
+        [HttpDelete("/Assignment/{assignmentId}/Student/{studentId}/AssignmentSolution")]
+        public ActionResult DeleteAssignmentSolution([FromRoute] int assignmentId, [FromRoute] int studentId)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = _educationalSubjectServices.DeleteAssignmentSolution(assignmentId, studentId);
 
             if (!result)
             {
