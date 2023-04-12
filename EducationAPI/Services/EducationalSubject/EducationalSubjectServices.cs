@@ -133,11 +133,12 @@ namespace EducationAPI.Services
             return true;
         }
 
-        //check it and delete also from tasks
+       
         public bool DeleteStudentFromEducationSubject(int subjectId, int studentId)
         {
             var subject = _dbContext
                 .EducationalSubjects
+                .Include(e => e.Assignments)
                 .FirstOrDefault(e => e.Id == subjectId);
 
             if (subject == null) return false;
@@ -148,8 +149,24 @@ namespace EducationAPI.Services
 
             if (user == null) return false;
 
+            var subjectAssignments = _dbContext
+                .Assignments
+                .Include(au => au.AssignmentUsers)
+                .Where(a => a.AssignmentUsers.Any(au => au.StudentId == studentId) && a.EducationalSubjectId == subjectId)
+                .ToList();
 
             subject.EducationalSubjectUsers.Remove(user);
+
+            foreach (var assignment in subjectAssignments)
+            {
+                var assignmentUser = assignment.AssignmentUsers.FirstOrDefault(au => au.StudentId == studentId);
+
+                if (assignmentUser != null)
+                {
+                    assignment.AssignmentUsers.Remove(assignmentUser);
+                }
+            }
+
             _dbContext.SaveChanges();
 
             return true;
@@ -421,6 +438,27 @@ namespace EducationAPI.Services
             if (assignmentResult == null) return false;
 
             _dbContext.AssignmentResults.Remove(assignmentResult);
+            _dbContext.SaveChanges();
+
+            return true;
+        }
+
+        public bool DeleteStudentFromAssignment(int assignmentId, int studentId)
+        {
+            var assignment = _dbContext
+                           .Assignments
+                           .FirstOrDefault(e => e.Id == assignmentId);
+
+            if (assignment == null) return false;
+
+            var user = _dbContext
+                .AssignmentUsers
+                .FirstOrDefault(s => s.StudentId == studentId && s.AssignmentId == assignmentId);
+
+            if (user == null) return false;
+
+
+            assignment.AssignmentUsers.Remove(user);
             _dbContext.SaveChanges();
 
             return true;

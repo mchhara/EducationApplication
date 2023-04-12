@@ -144,6 +144,20 @@ namespace EducationAPI.Controllers
             return NotFound();
         }
 
+        [HttpDelete("Assignment/{assignmentId:int}/Student/{studentId}")]
+        public ActionResult DeleteStudentFromAssignment([FromRoute] int assignmentId, [FromRoute] int studentId)
+        {
+            var isDeleted = _educationalSubjectServices.DeleteStudentFromAssignment(assignmentId, studentId);
+
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
+
         [HttpPut("/Assignment/{assignmentId}")]
         public ActionResult EditAssignment([FromRoute] int assignmentId, [FromBody] AssignmentDto dto)
         {
