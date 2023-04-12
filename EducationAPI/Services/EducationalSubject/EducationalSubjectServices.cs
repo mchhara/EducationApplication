@@ -392,13 +392,19 @@ namespace EducationAPI.Services
             return result;
         }
 
-        //check
+        
         public int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId)
         {
             var assignmentUser = _dbContext
                .AssignmentUsers
                .FirstOrDefault(e => e.StudentId == studentId && e.AssignmentId == assignmentId);
-            if (assignmentUser == null || assignmentUser.AssignmentResult != null) return 0;
+            if (assignmentUser == null) return 0;
+
+            var ifResultExist = _dbContext
+                .AssignmentResults
+                .FirstOrDefault(ar => ar.AssignmentUserId == assignmentUser.Id);
+
+            if (ifResultExist != null) return 0;
 
             var assignmentResult = _mapper.Map<Entities.AssignmentResult>(dto);
             
