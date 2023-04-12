@@ -133,7 +133,7 @@ namespace EducationAPI.Services
             return true;
         }
 
-        //check it
+        //check it and delete also from tasks
         public bool DeleteStudentFromEducationSubject(int subjectId, int studentId)
         {
             var subject = _dbContext
@@ -147,14 +147,6 @@ namespace EducationAPI.Services
                 .FirstOrDefault(s => s.StudentId == studentId && s.EducationalSubjectId == subjectId);
 
             if (user == null) return false;
-
-            //var student = _dbContext
-            //    .Users
-            //    .Where(s => s.EducationalSubjectUser.Contains(subject) && s.Id == studentId)
-            //    .FirstOrDefault();
-
-            //if (student == null) return false;
-
 
 
             subject.EducationalSubjectUsers.Remove(user);
@@ -383,12 +375,13 @@ namespace EducationAPI.Services
             return result;
         }
 
+        //check
         public int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId)
         {
             var assignmentUser = _dbContext
                .AssignmentUsers
                .FirstOrDefault(e => e.StudentId == studentId && e.AssignmentId == assignmentId);
-            if (assignmentUser == null || assignmentUser.AssignmentResult != null) return -1;
+            if (assignmentUser == null || assignmentUser.AssignmentResult != null) return 0;
 
             var assignmentResult = _mapper.Map<Entities.AssignmentResult>(dto);
             

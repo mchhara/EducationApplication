@@ -43,13 +43,13 @@ namespace EducationAPI.Services.User
             return userDto;
         }
 
-        public UserResponseDto Create(UserDto dto)
+        public int Create(UserDto dto)
         {
             var user = _mapper.Map<Entities.User>(dto);
 
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
-            return _mapper.Map<UserResponseDto>(user);
+            return user.Id;
         }
 
         public bool Delete(int id)

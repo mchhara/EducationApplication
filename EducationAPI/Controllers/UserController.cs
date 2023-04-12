@@ -23,7 +23,7 @@ namespace EducationAPI.Controllers
         {
             var users = _userService.GetAll();
 
-            return users.IsNullOrEmpty() ? NoContent() : Ok(users);
+            return users.IsNullOrEmpty() ? NotFound() : Ok(users);
 
 
         }
@@ -34,7 +34,7 @@ namespace EducationAPI.Controllers
         {
             var user = _userService.GetUser(userId);
 
-            if (user == null) return NoContent();
+            if (user == null) return NotFound();
 
             return  Ok(user);
         }
@@ -47,7 +47,7 @@ namespace EducationAPI.Controllers
 
             var user = _userService.Create(dto);
 
-            return Ok(user);
+            return Created($"{user}", null);
         }
 
 
@@ -55,14 +55,17 @@ namespace EducationAPI.Controllers
         public IActionResult DeleteUser([FromRoute] int userId)
         {
             var isDeleted = _userService.Delete(userId);
+
             return isDeleted ? NoContent() : NotFound();
         }
 
-        [HttpPut("{id:int}")]
-        public IActionResult UpdateUser([FromBody] UserDto request, [FromRoute] int id)
+        [HttpPut("{userId:int}")]
+        public IActionResult UpdateUser([FromBody] UserDto request, [FromRoute] int userId)
         {
             if (!ModelState.IsValid) return BadRequest();
-            var user = _userService.Update(request, id);
+
+            var user = _userService.Update(request, userId);
+
             return user ? Ok() : NotFound();
         }
 
