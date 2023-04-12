@@ -7,7 +7,7 @@ namespace EducationAPI.Services.User
     {
         IEnumerable<UserResponseDto> GetAll();
         UserResponseDto GetUser(int userId);
-        UserResponseDto Create(UserDto dto);
+        int Create(UserDto dto);
         bool Update(UserDto dto, int id);
         bool Delete(int id);
     }

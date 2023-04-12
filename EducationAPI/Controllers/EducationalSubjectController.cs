@@ -30,6 +30,12 @@ namespace EducationAPI.Controllers
         public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllSubjects()
         {
             var educationalMaterialDtos = _educationalSubjectServices.GetAll();
+
+            if (educationalMaterialDtos == null)
+            {
+                return NotFound();
+            }
+
             return Ok(educationalMaterialDtos);
         }
 
@@ -185,7 +191,7 @@ namespace EducationAPI.Controllers
             return Ok();
 
         }
-
+        //GradesEndpoints
 
         [HttpGet("/UserGrades")]
         public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllUsersAndGrades()
@@ -247,13 +253,23 @@ namespace EducationAPI.Controllers
         {
             var educationalMaterialDtos = _educationalSubjectServices.GetAllUserSubjects(studentId);
 
+            if (educationalMaterialDtos == null)
+            {
+                return NotFound();
+            }
+
             return Ok(educationalMaterialDtos);
         }
 
         [HttpGet("/StudentMaterials/{materialId}/Student/{studentId}")]
-        public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllUserSubjects([FromRoute] int materialId, [FromRoute] int studentId)
+        public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetUserSubject([FromRoute] int materialId, [FromRoute] int studentId)
         {
             var educationalMaterialDtos = _educationalSubjectServices.GetUserSubject(materialId, studentId);
+
+            if (educationalMaterialDtos == null)
+            {
+                return NotFound();
+            }
 
             return Ok(educationalMaterialDtos);
         }
@@ -268,7 +284,7 @@ namespace EducationAPI.Controllers
 
             var id = _educationalSubjectServices.AddAssignmentSolution(dto, assignmentId, studentId);
 
-            if(id == -1) return BadRequest(ModelState);
+            if(id == 0) return NotFound();
 
             return Created($"{id}", null);
         }
@@ -296,11 +312,6 @@ namespace EducationAPI.Controllers
         public ActionResult DeleteAssignmentSolution([FromRoute] int assignmentId, [FromRoute] int studentId)
         {
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var result = _educationalSubjectServices.DeleteAssignmentSolution(assignmentId, studentId);
 
             if (!result)
@@ -308,7 +319,7 @@ namespace EducationAPI.Controllers
                 return NotFound();
             }
 
-            return Ok();
+            return NoContent();
         }
 
     }
