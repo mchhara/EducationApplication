@@ -8,6 +8,5 @@
         public int AssignmentId { get; set; }
         public Assignment Assignment { get; set; }
         public AssignmentResult AssignmentResult { get; set; }
-        public int AssignmentResultId { get; set; }
     }
 }
