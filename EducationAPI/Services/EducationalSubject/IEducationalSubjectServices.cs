@@ -27,5 +27,6 @@ namespace EducationAPI.Services.EducationalSubject
         int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId);
         bool EditAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId);
         bool DeleteAssignmentSolution( int assignmentId, int studentId);
+        bool DeleteStudentFromAssignment(int assignmentId, int studentId);
     }
 }
