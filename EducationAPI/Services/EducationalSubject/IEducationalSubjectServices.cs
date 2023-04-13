@@ -23,7 +23,7 @@ namespace EducationAPI.Services.EducationalSubject
         bool AddUserGradeToAssignment(int assignmentId, int userId, int gradeValue);
         bool DeleteUserGradeToAssignment(int assignmentId, int studentId);
         IEnumerable<EducationalSubjectDtoResponse> GetAllUserSubjects(int studentId);
-        EducationalSubjectDtoResponse GetUserSubject(int materialId, int studentId);
+        IEnumerable<EducationalSubjectDtoResponse> GetUserSubject(int materialId, int studentId);
         int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId);
         bool EditAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId);
         bool DeleteAssignmentSolution( int assignmentId, int studentId);

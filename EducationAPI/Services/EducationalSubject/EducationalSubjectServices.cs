@@ -45,6 +45,7 @@ namespace EducationAPI.Services
         {
             var educationalMaterial = _dbContext
                 .EducationalSubjects
+                .Include(a => a.Assignments)
                 .FirstOrDefault(e => e.Id == id);
 
             if (educationalMaterial == null)
@@ -356,10 +357,16 @@ namespace EducationAPI.Services
 
             var educationalSubjects = _dbContext
              .EducationalSubjects
+             .Where(e => e.EducationalSubjectUsers.Any(u => u.StudentId == studentId))
              .Include(e => e.Assignments)
              .ThenInclude(a => a.AssignmentUsers)
-             .Where(e => e.EducationalSubjectUsers.Any(u => u.StudentId == studentId))
              .ToList();
+
+
+            if (educationalSubjects.Count == 0)
+            {
+                return null;
+            }
 
             educationalSubjects.ForEach(e =>
             {
@@ -372,24 +379,29 @@ namespace EducationAPI.Services
         }
 
 
-        public EducationalSubjectDtoResponse GetUserSubject(int materialId, int studentId) 
+        public IEnumerable<EducationalSubjectDtoResponse> GetUserSubject(int materialId, int studentId) 
         {
 
-            var educationalMaterial = _dbContext.EducationalSubjects
-            .Include(e => e.Assignments)
-            .ThenInclude(a => a.AssignmentUsers)
-            .ThenInclude(au => au.Student)
-            .FirstOrDefault(e => e.Id == materialId &&
-                e.EducationalSubjectUsers.Any(esu => esu.StudentId == studentId) &&
-                e.Assignments.Any(a => a.AssignmentUsers.Any(au => au.StudentId == studentId)));
+            var educationalSubject = _dbContext
+           .EducationalSubjects
+           .Where(e => e.EducationalSubjectUsers.Any(u => u.StudentId == studentId) && e.Id == materialId)
+           .Include(e => e.Assignments)
+           .ThenInclude(a => a.AssignmentUsers)
+           .ToList();
 
-            if (educationalMaterial == null)
+            if (educationalSubject.Count == 0)
             {
                 return null;
             }
 
-            var result = _mapper.Map<EducationalSubjectDtoResponse>(educationalMaterial);
-            return result;
+            educationalSubject.ForEach(e =>
+            {
+                e.Assignments = e.Assignments.Where(a => a.AssignmentUsers.Any(au => au.StudentId == studentId)).ToList();
+            });
+
+            var educationalSubjectDtos = _mapper.Map<List<EducationalSubjectDtoResponse>>(educationalSubject);
+
+            return educationalSubjectDtos;
         }
 
         
