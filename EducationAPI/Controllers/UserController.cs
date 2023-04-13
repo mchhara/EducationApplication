@@ -1,7 +1,7 @@
 ﻿using AutoMapper.Execution;
 using EducationAPI.Entities;
 using EducationAPI.Models.User;
-using EducationAPI.Services.User;
+using EducationAPI.Services.UserServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -67,6 +67,22 @@ namespace EducationAPI.Controllers
             var user = _userService.Update(request, userId);
 
             return user ? Ok() : NotFound();
+        }
+
+
+        [HttpPost("register")]
+        public ActionResult RegisterUser([FromBody] UserDto dto)
+        {
+            _userService.RegisterUser(dto);
+            return Ok();
+        }
+
+
+        [HttpPost("login")]
+        public ActionResult Login([FromBody] UserLogin dto)
+        {
+            var token = _userService.GenerateJwt(dto);
+            return Ok(token);
         }
 
     }

@@ -1,7 +1,7 @@
 ﻿using EducationAPI.Models.User;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EducationAPI.Services.User
+namespace EducationAPI.Services.UserServices
 {
     public interface IUserService
     {
@@ -10,5 +10,7 @@ namespace EducationAPI.Services.User
         int Create(UserDto dto);
         bool Update(UserDto dto, int id);
         bool Delete(int id);
+        void RegisterUser(UserDto user);
+        string GenerateJwt(UserLogin dto);
     }
 }

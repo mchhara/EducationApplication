@@ -55,10 +55,6 @@ namespace EducationAPI
                 new Role()
                 {
                     Name = "Teacher"
-                },
-                new Role()
-                {
-                    Name = "Admin"
                 }
             };
 
