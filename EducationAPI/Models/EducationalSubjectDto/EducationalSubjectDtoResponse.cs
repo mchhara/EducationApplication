@@ -10,7 +10,6 @@ namespace EducationAPI.Models.EducationalSubjectDto
         public string Name { get; set; }
         public string Description { get; set; }
         public List<AssignmentResponseDto> Assignments { get; set; }
-        public List<UserResponseDto> Students { get; set; }
 
     }
 }
