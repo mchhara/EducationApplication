@@ -2,13 +2,16 @@
 using EducationAPI.Entities;
 using EducationAPI.Models.User;
 using EducationAPI.Services.UserServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 
 namespace EducationAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Teacher")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -70,6 +73,7 @@ namespace EducationAPI.Controllers
         }
 
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public ActionResult RegisterUser([FromBody] UserDto dto)
         {
@@ -77,7 +81,7 @@ namespace EducationAPI.Controllers
             return Ok();
         }
 
-
+        [AllowAnonymous]
         [HttpPost("login")]
         public ActionResult Login([FromBody] UserLogin dto)
         {

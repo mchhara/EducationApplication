@@ -5,6 +5,7 @@ using EducationAPI.Models.AssignmentResult;
 using EducationAPI.Models.EducationalSubjectDto;
 using EducationAPI.Services;
 using EducationAPI.Services.EducationalSubject;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,7 @@ namespace EducationAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Teacher")]
     public class EducationalSubjectController : ControllerBase
     {
         private readonly IEducationalSubjectServices _educationalSubjectServices;
@@ -263,6 +265,8 @@ namespace EducationAPI.Controllers
         // Endpoints for student's panel
 
         [HttpGet("/StudentMaterials/Student/{studentId}")]
+        [Authorize(Roles = "Student")]
+
         public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetAllUserSubjects([FromRoute] int studentId)
         {
             var educationalMaterialDtos = _educationalSubjectServices.GetAllUserSubjects(studentId);
@@ -276,6 +280,7 @@ namespace EducationAPI.Controllers
         }
 
         [HttpGet("/StudentMaterials/{materialId}/Student/{studentId}")]
+        [Authorize(Roles = "Student")]
         public ActionResult<IEnumerable<EducationalSubjectDtoResponse>> GetUserSubject([FromRoute] int materialId, [FromRoute] int studentId)
         {
             var educationalMaterialDtos = _educationalSubjectServices.GetUserSubject(materialId, studentId);
@@ -289,6 +294,7 @@ namespace EducationAPI.Controllers
         }
 
         [HttpPost("/Assignment/{assignmentId}/Student/{studentId}/AssignmentSolution")]
+        [Authorize(Roles = "Student")]
         public ActionResult AddAssignmentSolution([FromBody] AssignmentResultDto dto,[FromRoute] int  assignmentId, [FromRoute] int studentId)
         {
             if (!ModelState.IsValid)
@@ -304,6 +310,7 @@ namespace EducationAPI.Controllers
         }
 
         [HttpPut("/Assignment/{assignmentId}/Student/{studentId}/AssignmentSolution")]
+        [Authorize(Roles = "Student")]
         public ActionResult EditAssignmentSolution([FromBody] AssignmentResultDto dto, [FromRoute] int assignmentId, [FromRoute] int studentId)
         {
             if (!ModelState.IsValid)
@@ -323,6 +330,7 @@ namespace EducationAPI.Controllers
 
 
         [HttpDelete("/Assignment/{assignmentId}/Student/{studentId}/AssignmentSolution")]
+        [Authorize(Roles = "Student")]
         public ActionResult DeleteAssignmentSolution([FromRoute] int assignmentId, [FromRoute] int studentId)
         {
 
