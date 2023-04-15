@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.Execution;
 using EducationAPI.Entities;
@@ -19,15 +20,19 @@ namespace EducationAPI.Services
     {
         private readonly EducationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<EducationalSubjectServices> _logger;
 
-        public EducationalSubjectServices(EducationDbContext dbContext, IMapper mapper)
+        public EducationalSubjectServices(EducationDbContext dbContext, IMapper mapper, ILogger<EducationalSubjectServices> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public bool Delete(int id)
         {
+            _logger.LogWarning($"EducationalSubject with id: {id} DELETE action invoked");
+
             var educationalMaterial = _dbContext
                 .EducationalSubjects
                 .Include(a => a.Assignments)
@@ -43,6 +48,8 @@ namespace EducationAPI.Services
 
         public EducationalSubjectDtoResponse GetById(int id)
         {
+            _logger.LogWarning($"EducationalSubject with id: {id} GET action invoked");
+
             var educationalMaterial = _dbContext
                 .EducationalSubjects
                 .Include(a => a.Assignments)
@@ -61,6 +68,8 @@ namespace EducationAPI.Services
 
         public IEnumerable<EducationalSubjectDtoResponse> GetAll()
         {
+            _logger.LogWarning($"EducationalSubjects GETALL action invoked");
+
             var educationalSubjects = _dbContext
                 .EducationalSubjects
                 .Include(a => a.Assignments)
@@ -74,6 +83,9 @@ namespace EducationAPI.Services
 
         public int Create(EducationalSubjectDto dto)
         {
+            _logger.LogWarning($"EducationalSubject POST action invoked");
+
+
             var educationalMaterial = _mapper.Map<Entities.EducationalSubject>(dto);
             _dbContext.EducationalSubjects.Add(educationalMaterial);
             _dbContext.SaveChanges();
@@ -84,6 +96,7 @@ namespace EducationAPI.Services
 
         public bool UpdateEducationalSubject(EducationalSubjectDto dto, int id)
         {
+            _logger.LogWarning($"EducationalSubject with id: {id} PUT action invoked");
 
             var educationalSubject = _dbContext
                 .EducationalSubjects
@@ -104,6 +117,8 @@ namespace EducationAPI.Services
 
         public AssignmentResponseDto AddAssigmentToSubject(AssignmentDto dto, int subjectId)
         {
+            _logger.LogWarning($"Add Assigment To EducationalSubject with EducationalSubjectId: {subjectId} invoked");
+
             var subject = _dbContext
                 .EducationalSubjects
                 .FirstOrDefault(e => e.Id == subjectId);
@@ -121,6 +136,8 @@ namespace EducationAPI.Services
 
         public bool DeleteAssignmentFromEducationalSubject(int taskId)
         {
+            _logger.LogWarning($"Delete Assignment From EducationalSubject with TaskId: {taskId} invoked");
+
             var task = _dbContext
                 .Assignments
                 .Where(a => a.Id == taskId)
@@ -137,6 +154,8 @@ namespace EducationAPI.Services
        
         public bool DeleteStudentFromEducationSubject(int subjectId, int studentId)
         {
+            _logger.LogWarning($"Delete Student From EducationSubject with SubjectId: {subjectId} and StudentId {studentId} invoked");
+
             var subject = _dbContext
                 .EducationalSubjects
                 .Include(e => e.Assignments)
@@ -176,6 +195,8 @@ namespace EducationAPI.Services
 
         public bool EditAssignment(int assignmentId, AssignmentDto dto)
         {
+            _logger.LogWarning($"Edit Assignment with AssignmentId: {assignmentId} invoked");
+
             var assignment = _dbContext
                 .Assignments
                 .Where(e => e.Id == assignmentId)
@@ -197,6 +218,7 @@ namespace EducationAPI.Services
 
         public bool AddStudentToEducationalSubject(int subjectId, int studentId)
         {
+            _logger.LogWarning($"Add Student To EducationalSubject with SubjectId: {subjectId} and StudentId {studentId} invoked");
 
             var subject = _dbContext
                 .EducationalSubjects
@@ -229,6 +251,8 @@ namespace EducationAPI.Services
 
         public bool AddStudentToAssignment(int assignmentId, int studentId)
         {
+            _logger.LogWarning($"Add Student To Assignment with AssignmentId: {assignmentId} and StudentId {studentId} invoked");
+
             var assignment = _dbContext
                .Assignments
                .Include(u => u.AssignmentUsers)
@@ -261,6 +285,8 @@ namespace EducationAPI.Services
 
         public IEnumerable<UserGradeResult> GetUsersGrades()
         {
+            _logger.LogWarning($"Get All Users and Grades invoked");
+
             var query = from user in _dbContext.Users
                         join assignmentUser in _dbContext.AssignmentUsers on user.Id equals assignmentUser.StudentId
                         join assignment in _dbContext.Assignments on assignmentUser.AssignmentId equals assignment.Id
@@ -282,6 +308,8 @@ namespace EducationAPI.Services
 
         public IEnumerable<UserGradeResult> GetUserGrades(int userId)
         {
+            _logger.LogWarning($"Get All grades for specific user's id {userId} invoked");
+
             var query = from user in _dbContext.Users
                         where user.Id == userId
                         join assignmentUser in _dbContext.AssignmentUsers on user.Id equals assignmentUser.StudentId
@@ -309,6 +337,9 @@ namespace EducationAPI.Services
 
         public bool AddUserGradeToAssignment(int assignmentId, int userId, int gradeValue)
         {
+            _logger.LogWarning($"Add User Grade To Assignment for UserId {userId}, AssignmentId {assignmentId} and GradeValue {gradeValue} invoked");
+
+
             var assignmentUser = _dbContext.AssignmentUsers.FirstOrDefault(au => au.StudentId == userId && au.AssignmentId == assignmentId);
             if (assignmentUser == null)
             {
@@ -331,6 +362,8 @@ namespace EducationAPI.Services
 
         public bool DeleteUserGradeToAssignment(int assignmentId, int studentId)
         {
+            _logger.LogWarning($"Delete User Grade From Assignment for UserId {studentId}, AssignmentId {assignmentId} invoked");
+
             var assignmentUser = _dbContext.AssignmentUsers.FirstOrDefault(au => au.StudentId == studentId && au.AssignmentId == assignmentId);
 
             if (assignmentUser == null)
@@ -354,6 +387,7 @@ namespace EducationAPI.Services
 
         public IEnumerable<EducationalSubjectDtoResponse> GetAllUserSubjects(int studentId)
         {
+            _logger.LogWarning($"Get All UserSubjects for specific StudentId{studentId} action invoked");
 
             var educationalSubjects = _dbContext
              .EducationalSubjects
@@ -381,6 +415,7 @@ namespace EducationAPI.Services
 
         public IEnumerable<EducationalSubjectDtoResponse> GetUserSubject(int materialId, int studentId) 
         {
+            _logger.LogWarning($"Get specific UserSubject id {materialId} for specific StudentId{studentId} action invoked");
 
             var educationalSubject = _dbContext
            .EducationalSubjects
@@ -407,6 +442,9 @@ namespace EducationAPI.Services
         
         public int AddAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId)
         {
+            _logger.LogWarning($"Add AssignmentSolution by user id {studentId} for specific Assignment id {assignmentId} action invoked");
+
+
             var assignmentUser = _dbContext
                .AssignmentUsers
                .FirstOrDefault(e => e.StudentId == studentId && e.AssignmentId == assignmentId);
@@ -431,6 +469,8 @@ namespace EducationAPI.Services
 
         public bool EditAssignmentSolution(AssignmentResultDto dto, int assignmentId, int studentId)
         {
+            _logger.LogWarning($"Edit Assignment Solution by user id {studentId} for specific Assignment id {assignmentId} action invoked");
+
             var assignmentResult = _dbContext.AssignmentResults
                 .Include(ar => ar.AssignmentUser)
                 .ThenInclude(au => au.Assignment)
@@ -448,6 +488,8 @@ namespace EducationAPI.Services
 
         public bool DeleteAssignmentSolution( int assignmentId, int studentId)
         {
+            _logger.LogWarning($"Delete Assignment Solution by user id {studentId} for specific Assignment id {assignmentId} action invoked");
+
             var assignmentResult = _dbContext.AssignmentResults
                             .Include(ar => ar.AssignmentUser)
                             .ThenInclude(au => au.Assignment)
@@ -463,6 +505,8 @@ namespace EducationAPI.Services
 
         public bool DeleteStudentFromAssignment(int assignmentId, int studentId)
         {
+            _logger.LogWarning($"Delete Student by id {studentId} from specific Assignment id {assignmentId} action invoked");
+
             var assignment = _dbContext
                            .Assignments
                            .FirstOrDefault(e => e.Id == assignmentId);

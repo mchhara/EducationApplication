@@ -14,8 +14,14 @@ using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using NLog.Web;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+builder.Host.UseNLog();
 
 
 var authenticationSettings = new AuthenticationSettings();

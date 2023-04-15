@@ -20,17 +20,22 @@ namespace EducationAPI.Services.UserServices
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly ILogger<UserService> _logger;
 
-        public UserService(EducationDbContext dbContext, IMapper mapper, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings)
+        public UserService(EducationDbContext dbContext, IMapper mapper, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, ILogger<UserService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _logger = logger;
         }
 
         public IEnumerable<UserResponseDto> GetAll()
         {
+            _logger.LogWarning($"Get All Users action invoked");
+
+
             var users = _dbContext
                 .Users
                 .ToList();
@@ -44,6 +49,8 @@ namespace EducationAPI.Services.UserServices
 
         public UserResponseDto GetUser(int userId)
         {
+            _logger.LogWarning($"Get User by id {userId} action invoked");
+
             var user = _dbContext
                 .Users
                 .FirstOrDefault(u => u.Id == userId);
@@ -57,6 +64,8 @@ namespace EducationAPI.Services.UserServices
 
         public int Create(UserDto dto)
         {
+            _logger.LogWarning($"Create User action invoked");
+
             var user = _mapper.Map<Entities.User>(dto);
 
             _dbContext.Users.Add(user);
@@ -66,6 +75,8 @@ namespace EducationAPI.Services.UserServices
 
         public bool Delete(int id)
         {
+            _logger.LogWarning($"Delete User by id {id} action invoked");
+
             var user = _dbContext.Users.FirstOrDefault(i => i.Id == id);
             if (user is null) return false;
 
@@ -76,6 +87,8 @@ namespace EducationAPI.Services.UserServices
 
         public bool Update(UserDto dto, int id)
         {
+            _logger.LogWarning($"Update User by id {id} action invoked");
+
             var user = _dbContext.Users.FirstOrDefault(i => i.Id == id);
             if (user is null) return false;
             user.FirstName = dto.FirstName;
@@ -90,6 +103,9 @@ namespace EducationAPI.Services.UserServices
 
         public void RegisterUser(UserDto dto)
         {
+            _logger.LogWarning($"Register new User action invoked");
+
+
             var newUser = new User()
             {
                 FirstName = dto.FirstName,
@@ -110,6 +126,8 @@ namespace EducationAPI.Services.UserServices
 
         public string GenerateJwt(UserLogin dto)
         {
+            _logger.LogWarning($"Login in User action invoked");
+
             var user = _dbContext.Users
                 .Include(u => u.Role)
                 .FirstOrDefault(u => u.Email == dto.Email);
