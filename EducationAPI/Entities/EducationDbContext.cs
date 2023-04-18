@@ -4,8 +4,10 @@ namespace EducationAPI.Entities
 {
     public class EducationDbContext : DbContext
     {
-        private string _connectionString =
-            "Server=DESKTOP-ALLUHR9;Database=EducationDb;Trusted_Connection=True;Encrypt=False;";
+        public EducationDbContext(DbContextOptions<EducationDbContext> options) : base(options)
+        {
+            
+        }
 
         public DbSet<EducationalSubject> EducationalSubjects { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
@@ -15,9 +17,6 @@ namespace EducationAPI.Entities
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-        }
+       
     }
 }

@@ -18,14 +18,6 @@ namespace EducationAPI
             if (_dBContext.Database.CanConnect())
             {
 
-                //var pendingMigrations = _dBContext.Database.GetPendingMigrations();
-
-                //if (pendingMigrations != null && pendingMigrations.Any())
-                //{
-                //    _dBContext.Database.Migrate();
-                //}
-
-
                 if (!_dBContext.Roles.Any())
                 {
                     var roles = GetRoles();

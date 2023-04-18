@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,7 +78,8 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
-builder.Services.AddDbContext<EducationDbContext>();
+builder.Services.AddDbContext<EducationDbContext>
+    (options => options.UseSqlServer(builder.Configuration.GetConnectionString("EducationDbConnection")));
 builder.Services.AddScoped<EducationalSubjectSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
